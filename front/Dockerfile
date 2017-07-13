@@ -47,10 +47,17 @@ RUN apt-get install -y \
   php5-memcached \
   php5-mysql
 
+
+# Install PHP Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php --install-dir=/usr/bin
+RUN php -r "unlink('composer-setup.php');"
+
 WORKDIR /var/www
 
 # Install Vanilla.
-RUN git clone -b Vanilla_$VANILLA_VERSION --depth 1 $VANILLA_URL .
+RUN git clone -b $VANILLA_VERSION --depth 1 $VANILLA_URL .
 
 # Set correct folder permissions.
 RUN chmod 777 conf
@@ -61,6 +68,9 @@ COPY applications/ applications/
 COPY plugins/ plugins/
 COPY themes/ themes/
 COPY locales/ locales/
+
+# Make sure the PHP Composer runs
+RUN php /usr/bin/composer.phar install
 
 ################################################################################
 # Volumes

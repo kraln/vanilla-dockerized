@@ -7,7 +7,7 @@ services:
     build:
       context: front
       args:
-        VANILLA_VERSION: 2.3
+        VANILLA_VERSION: release/2017-Q2-6
         VANILLA_URL: https://github.com/vanilla/vanilla.git
     ports:
       - "80:80"
@@ -27,7 +27,7 @@ services:
       - ./.env
     build: database
     ports:
-      - "127.0.0.1:3306:3306"
+      - "3306:3306"
     volumes:
       - ./database/data/:/var/lib/mysql/
       - ./database/logs/mysql/:/var/log/mysql/
@@ -38,6 +38,6 @@ services:
       - ./.env
     build: cache
     ports:
-      - "127.0.0.1:11211:11211"
+      - "11211:11211"
     volumes:
       - ./cache/logs/memcached/:/var/log/memcached/
